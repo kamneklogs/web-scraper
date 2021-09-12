@@ -19,15 +19,15 @@ inputs = html.find_all(
     'div', {'class': 'col-lg-4 col-md-4 col-sm-4 col-xs-6'})
 
 
-for i, entrada in enumerate(inputs):
+for i, input in enumerate(inputs):
 
-    products.append(entrada.find(
+    products.append(input.find(
         'div', class_='car-content').getText().split('$')[0].strip())
 
-    prices.append(entrada.find(
+    prices.append(input.find(
         'div', class_='car-content').getText().split('$')[1].strip())
 
-    anioYkilometraje = entrada.find(
+    anioYkilometraje = input.find(
         'ul', class_='list-inline').getText().strip().split(' ')
 
     years.append(anioYkilometraje[0])
@@ -39,3 +39,4 @@ df = pd.DataFrame({'Model': products, 'Price': prices,
                   'year': years, 'kms': kilometers})
 
 df.to_csv('cars.csv', index=False, encoding='utf-8')
+df
