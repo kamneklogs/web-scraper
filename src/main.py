@@ -2,10 +2,10 @@ import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 
-products = []  
-prices = []  
-years = []  
-kilometers = [] 
+products = []
+prices = []
+years = []
+kilometers = []
 
 
 url = "https://loscoches.com/carros-usados/?cars_pp=48&cars_orderby=date&cars_order=asc&lay_style=view-grid-left&cars_grid=yes"
