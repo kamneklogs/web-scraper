@@ -13,11 +13,10 @@ url = "https://loscoches.com/carros-usados/?cars_pp=48&cars_orderby=date&cars_or
 response = requests.get(url)
 html = bs(response.text, 'html.parser')
 
-vehicles_html = html.find_all('div', 'a.text', class_='car-content')
-
 inputs = html.find_all(
     'div', {'class': 'col-lg-4 col-md-4 col-sm-4 col-xs-6'})
 
+ 
 
 for i, input in enumerate(inputs):
 
