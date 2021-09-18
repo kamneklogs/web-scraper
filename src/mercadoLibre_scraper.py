@@ -57,7 +57,7 @@ class MercadoLibreCrawler(Spider):
 
         next_page_url = response.xpath(
             "//li[@class='andes-pagination__button andes-pagination__button--next']//a/@href").extract_first()
-        print(next_page_url)
+        #print(next_page_url)
 
         yield Request(next_page_url)
 
@@ -92,9 +92,14 @@ class MercadoLibreCrawler(Spider):
             fields.append(dict_fields.get(th))
 
         for idx, field in enumerate(fields):
-            x_path = '//tr[' + str(idx + 1) + ']//td//span/text()'
-            item.add_xpath(field, x_path)
+            if field == "kilometers":
+                kms = response.xpath('//tr[' + str(idx + 1) + ']//td//span/text()').extract_first()
+                item.add_value(field, kms.split(" ")[0])
+            else:
+                x_path = '//tr[' + str(idx + 1) + ']//td//span/text()'
+                item.add_xpath(field, x_path)
 
-        item.add_xpath('price', '//span[@class="price-tag-fraction"]/text()')
+        price = response.xpath('//span[@class="price-tag-fraction"]/text()').extract_first()
+        item.add_value('price', price.replace(".", ""))
 
         yield item.load_item()
