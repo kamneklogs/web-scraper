@@ -5,7 +5,9 @@ from scrapy.loader import ItemLoader
 from scrapy.spiders import Spider
 from bs4 import BeautifulSoup as bs
 
+
 class Car(Item):
+    """ A class that represents the items to be scraped (Cars) and its attributes"""
     brand = Field()
     model = Field()
     year = Field()
@@ -18,12 +20,15 @@ class Car(Item):
     kilometers = Field()
     price = Field()
 
-class BooksScrapySpider(Spider):
+
+class MercadoLibreCrawler(Spider):
+    """ A web-scraper for MercadoLibre website in the used cars section"""
+
     name = 'mercadolibre'
 
     custom_settings = {
         'USER_AGENT': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/71.0.3578.80 Chrome/71.0.3578.80 Safari/537.36',
-        #'CLOSESPIDER_PAGECOUNT': 2,  # Numero maximo de paginas en las cuales voy a descargar items. Scrapy se cierra cuando alcanza este numero
+        # 'CLOSESPIDER_PAGECOUNT': 2,  # Max number of pages to scrape items from.
     }
 
     allowed_domains = ['carros.mercadolibre.com.co', 'carro.mercadolibre.com.co']
@@ -31,9 +36,20 @@ class BooksScrapySpider(Spider):
     start_urls = ['https://carros.mercadolibre.com.co/usados/']
 
     def parse_start_url(self, response):
+        """ Indicates the scraper to scrape the start url too
+
+        :param response: the response to the request of the start url
+        :return: None
+        """
         return self.parse(response)
 
     def parse(self, response):
+        """ Parses the response of the requested url in search of the cars details urls by their xpath
+        and also extracts the next page page url by the xpath
+
+        :param response: the response to a search page url request
+        :return: None
+        """
         cars = response.xpath('//div[@class="ui-search-result__image"]/a/@href').extract()
         # print(len(cars))
         for car in cars:
@@ -46,10 +62,13 @@ class BooksScrapySpider(Spider):
         yield Request(next_page_url)
 
     def parse_item(self, response):
-        item = ItemLoader(Car(), response)
+        """ Parses the response of a car detail url request in search of the attibutes of a car (that were
+        defined in the class Car at the start of the file) by its unique xpath
 
-        # Utilizo Map Compose con funciones anonimas
-        # PARA INVESTIGAR: Que son las funciones anonimas en Python?
+        :param response: the response to a car detail url request
+        :return: None
+        """
+        item = ItemLoader(Car(), response)
 
         dict_fields = {
             "Marca": "brand",
